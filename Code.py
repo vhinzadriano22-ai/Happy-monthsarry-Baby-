@@ -1,0 +1,272 @@
+from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+
+MONTHSARY_DATA = {
+    "title": "Happy 9th Monthsary, My Baby!",
+    "couple_names": "Vhinz & Deanna",
+    "date": "November 14, 2026",
+    "hero_message": "9 months of laughter, late-night talks, and falling deeper in love with you.",
+    "love_letter": [
+        "Dear Deanna,",
+        "I cant believe na umabot tayo ng 9 months baby. kahit sobrang kulit kong tao. Looking back, I still can't believe na nakayanan natin mga dumating na problema sa ating relationship, and I still can't believe na 9 months na talaga tayo. Sobrang bilis ng panahon eversince dumating ka sa buhay ko. Kahit ordinary day nagiging masaya pag kasama kita my life has been so, so much more wonderful now that you are a part of it. Thank you so much for choosing me, giving me your patience, and for letting me love the way I do. I won't promise you anything ngayon, but always remember that I will always be here, making you laugh and building more memories."
+        "Thank you for being my best friend, my biggest supporter, and my favorite person to ragebait hehe. Here is to many more months and years together.",
+        "I love you so very much!"
+    ],
+    "memories": [
+        {
+           
+            "title": "The Day It All Started",
+            "description": "Our Valentine's Day date—the day you finally said yes to me being your boyfriend. mwhehehe.",
+            # Replace with a link to your own photo or leave as a placeholder
+            "image_url": "/static/the day.jpg"
+        },
+        {
+            
+            "title": "Photobooth",
+            "description": "Our First photobooth will always be my favorite out of all our photobooths.",
+            "image_url": "/static/firstt.jpg"
+        },
+        {
+            
+            "title": "Udays Photobooth",
+            "description": "This photobooth is also one of my favorite because this Udays is the best and the officially the FIRST one i attended with you",
+            "image_url": "/static/sec.jpg"
+
+        }
+   
+    ]
+}
+
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d6336c;
+            --secondary: #fff0f6;
+            --text: #343a40;
+            --card-bg: #ffffff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #ffdeeb 0%, #ffc9c9 100%);
+            color: var(--primary);
+        }
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        header .subtitle {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        header p {
+            max-width: 600px;
+            margin: 0 auto;
+            color: #495057;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        section {
+            margin-bottom: 60px;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        .letter-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(214, 51, 108, 0.1);
+            font-size: 1.05rem;
+        }
+        .letter-box p {
+            margin-bottom: 15px;
+        }
+        .memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+        .memory-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+        }
+        .memory-card:hover {
+            transform: translateY(-5px);
+        }
+        .memory-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .memory-content {
+            padding: 20px;
+        }
+        .memory-date {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .memory-content h3 {
+            margin: 5px 0 10px;
+            font-size: 1.2rem;
+        }
+        .reasons-list {
+            background: var(--card-bg);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(214, 51, 108, 0.1);
+            list-style: none;
+        }
+        .reasons-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .reasons-list li:last-child {
+            border-bottom: none;
+        }
+        .reasons-list li::before {
+            content: "❤";
+            color: var(--primary);
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #868e96;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="subtitle">{{ data.couple_names }} • {{ data.date }}</div>
+        <h1>{{ data.title }}</h1>
+        <p>{{ data.hero_message }}</p>
+    </header>
+
+    <div class="container">
+        <!-- Love Letter Section -->
+        <section>
+            <h2>A Letter For You</h2>
+            <div class="letter-box">
+                {% for paragraph in data.love_letter %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Memories Section -->
+        <section>
+            <h2></h2>
+            <div class="memories-grid">
+                {% for memory in data.memories %}
+                <div class="memory-card">
+                    <img src="{{ memory.image_url }}" alt="{{ memory.title }}">
+                    <div class="memory-content">
+                        <div class="memory-date">{{ memory.date }}</div>
+                        <h3>{{ memory.title }}</h3>
+                        <p>{{ memory.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section>
+            <h2>😋</h2>
+            <div class="letter-box" style="text-align: center; padding: 20px;">
+                <video width="100%" controls style="border-radius: 10px; max-height: 500px; outline: none;">
+                    <source src="/static/Vid.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+<!-- Background Music Player -->
+    <audio id="bg-music" loop>
+        <source src="/static/song.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="music-btn" onclick="toggleMusic()" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 20px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(214, 51, 108, 0.3);
+        z-index: 1000;
+        transition: transform 0.2s ease;
+    ">
+        🎵 Play Our Song
+    </button>
+
+    <script>
+        const music = document.getElementById("bg-music");
+        const btn = document.getElementById("music-btn");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                btn.innerHTML = "🎵 Play Our Song";
+                isPlaying = false;
+            } else {
+                music.play();
+                btn.innerHTML = "⏸️ Pause Music";
+                isPlaying = true;
+            }
+        }
+    </script>
+</body>
+</html>
+
+</body>
+</html>
+"""
+
+@app.route("/")
+def home():
+    return render_template_string(HTML_TEMPLATE, data=MONTHSARY_DATA)
+
+if __name__ == "__main__":
+    app.run(debug=True)
